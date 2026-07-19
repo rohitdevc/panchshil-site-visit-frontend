@@ -18,3 +18,19 @@ body {
   background: var(--panchshil-ink);
   color: #fff;
 }
+
+.font-open-sans {
+  font-family: "Open Sans", "Open Sans Fallback";
+}
+
+form input, form select {
+  @apply outline-none appearance-none px-2 pb-2
+}
+
+form select option {
+  @apply bg-black
+}
+
+form label {
+  @apply uppercase
+}
