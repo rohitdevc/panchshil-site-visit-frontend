@@ -24,7 +24,7 @@ body {
 }
 
 form input, form select {
-  @apply outline-none appearance-none px-2 pb-2
+  @apply outline-none appearance-none px-2 pb-2 w-full
 }
 
 form select option {
