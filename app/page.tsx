@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { HomeHero } from "@/components/home-hero";
+import { HomePage } from "@/components/pages/home";
 
 export const metadata: Metadata = {
   title: "Panchshil | Private Consultation",
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  return <HomeHero />;
+  return <HomePage />;
 }

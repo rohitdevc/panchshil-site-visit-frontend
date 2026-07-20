@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ThankYouPage } from "@/components/thank-you";
+import { ThankYouPage } from "@/components/pages/thank-you";
 
 export const metadata: Metadata = {
   title: "Panchshil | Private Consultation",

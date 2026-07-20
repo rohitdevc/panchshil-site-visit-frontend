@@ -17,14 +17,15 @@ body {
   margin: 0;
   background: var(--panchshil-ink);
   color: #fff;
-}
-
-.font-open-sans {
   font-family: "Open Sans", "Open Sans Fallback";
 }
 
+.font-zapf-regular {
+  font-family: "zapfHumanist601Regular", "zapfHumanist601Regular Fallback";
+}
+
 form input, form select {
-  @apply outline-none appearance-none px-2 pb-2 w-full
+  @apply outline-none appearance-none pb-1 w-full border-[#4A4D49] border-b-[1px] px-1
 }
 
 form select option {
@@ -33,4 +34,8 @@ form select option {
 
 form label {
   @apply uppercase
+}
+
+form .error {
+  @apply text-red-500 absolute -bottom-5
 }

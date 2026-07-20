@@ -76,3 +76,27 @@ export const zapfHumanist601Ultra = localFont({
   variable: "--font-zapf-humanist-ultra",
   display: "swap",
 });
+
+export const zapfHumanist601Regular = localFont({
+  src: [
+    {
+      path: "../public/fonts/ZapfHumanist601Regular/font.otf",
+      weight: "500",
+      style: "normal",
+    }
+  ],
+  variable: "--font-zapf-humanist-regular",
+  display: "swap",
+});
+
+export const zapfHumanist601Italic = localFont({
+  src: [
+    {
+      path: "../public/fonts/ZapfHumanist601Italic/font.otf",
+      weight: "500",
+      style: "normal",
+    }
+  ],
+  variable: "--font-zapf-humanist-italic",
+  display: "swap",
+});

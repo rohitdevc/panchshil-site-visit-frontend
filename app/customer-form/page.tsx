@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CustomerFormPage } from "@/components/customer-form";
+import { CustomerFormPage } from "@/components/pages/customer-form";
 
 export const metadata: Metadata = {
   title: "Panchshil | Private Consultation",
