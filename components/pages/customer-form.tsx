@@ -466,7 +466,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
         {
           displayStep === 1 && (
           <section className={`flex flex-col lg:flex-row lg:items-stretch pt-10 gap-10 xl:gap-20 transition-all duration-300 ease-in-out overflow-hidden ${fading ? "opacity-0" : "opacity-100"}`}>
-            <div style={{backgroundImage: `url(/images/form/step-01.png)`}} className="bg-no-repeat bg-cover bg-center w-full lg:w-2xl relative p-5 lg:p-10">
+            <div style={{backgroundImage: `url(${basePath}/images/form/step-01.png)`}} className="bg-no-repeat bg-cover bg-center w-full lg:w-2xl relative p-5 lg:p-10">
               <div className="absolute inset-0 bg-black/40"></div>
               <div className="flex flex-col relative h-full min-h-60">
                 <p className="uppercase text-[#b29a75] tracking-[0.2em]">Step 01 / Personal</p>
