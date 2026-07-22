@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
 
 	basePath: process.env.NEXT_PUBLIC_PATH === "/" ? "" : process.env.NEXT_PUBLIC_PATH,
 
+	assetPrefix: process.env.ASSET_PREFIX === "/" ? "" : process.env.ASSET_PREFIX,
+
 	images: {
 		remotePatterns: [
 			{
