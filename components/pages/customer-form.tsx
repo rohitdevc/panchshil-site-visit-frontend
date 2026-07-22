@@ -125,10 +125,6 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
     setPersonalForm((prev) => ({...prev, [name]: value}));
     setConfigurationForm((prev) => ({...prev, [name]: value}));
     setErrors(prev => ({ ...prev, [name]: undefined}));
-  }
-
-  const findCityName = async (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
 
     if(name === "pincode" && value.length === 6 && personalForm.country === "India") {
       const cityName = await searchPinCode(value);
@@ -390,7 +386,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
         referer_url: window.location.href
       };
 
-      const response = await fetch(basePath + "api/customer-form", {
+      const response = await fetch(basePath + "/api/customer-form", {
         method: "POST",
         body: JSON.stringify(payload),
         headers: {
@@ -430,7 +426,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
 
         if(!data.result) return false;
 
-        window.location.href = basePath + 'thank-you';
+        window.location.href = basePath + '/thank-you';
       }
     } catch(error) {
       console.error(error);
@@ -457,7 +453,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
 
   return (
     <main className="relative isolate bg-black">
-    <div className={`h-full w-full fixed top-0 left-0 z-15 cursor-wait bg-center bg-no-repeat bg-white opacity-50 ${showLoader === false ? 'hidden': ''}`} style={{backgroundImage: `url(images/img_loader.gif)`}}></div>
+    <div className={`h-full w-full fixed top-0 left-0 z-15 cursor-wait bg-center bg-no-repeat bg-white opacity-50 ${showLoader === false ? 'hidden': ''}`} style={{backgroundImage: `url(${basePath}/images/img_loader.gif)`}}></div>
       <div className="relative z-10 flex flex-col px-6 py-7 sm:px-10 sm:py-10 lg:px-[5vw] lg:py-[6.7vh]">
         <header className="flex flex-col lg:flex-row items-start gap-5 lg:justify-between">
           <PanchshilMark />
@@ -579,7 +575,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
                 </div>
                 <div className="flex flex-col gap-3 w-full relative">
                   <label>Pincode</label>
-                  <input type="text" name="pincode" value={personalForm.pincode} onChange={handleChange} onBlur={findCityName} ref={pinCodeRef} />
+                  <input type="text" name="pincode" value={personalForm.pincode} onChange={handleChange} ref={pinCodeRef} />
                   <ErrorSpan error_message={errors.pincode} />
                 </div>
                 <div className="flex flex-col gap-3 w-full relative">
@@ -613,7 +609,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
                     <div key={key} className={`bg-no-repeat bg-cover w-xs px-7 py-10 h-100 relative cursor-pointer transition-all duration-300 hover:border border-[#9E8C70] hover:shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080] ${propertyCategoryKey === key ? 'border border-[#9E8C70] shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080]' : '' }`} style={{backgroundImage: `url(${property_category.property_category_thumbnail})`}} onClick={() => (handleCategorySelect(key))}>
                       <div className="absolute inset-0 bg-black/70"></div>
                       <div className={`w-7 h-7 rounded-full border border-[#7B7B7B] border-[1px] absolute right-5 top-5 ${propertyCategoryKey === key ? 'bg-[#9E8C70]' : '' } flex justify-center items-center`}>
-                        <Image src={`images/icons/tick.png`} width={12} height={10} alt="Tick" className={`w-[10px] h-[7.55px] ${propertyCategoryKey !== key ? 'hidden' : ''}`} />
+                        <Image src={`${basePath}/images/icons/tick.png`} width={12} height={10} alt="Tick" className={`w-[10px] h-[7.55px] ${propertyCategoryKey !== key ? 'hidden' : ''}`} />
                       </div>
                       <div className="flex flex-col relative h-full">
                         <p className="uppercase text-[#b29a75] tracking-[0.2em]">{property_category.property_category_caption}</p>
@@ -652,7 +648,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
                     <div key={key} className={`bg-no-repeat bg-cover w-full px-7 py-7 h-100 relative flex items-end cursor-pointer transition-all duration-300 hover:border border-[#9E8C70] hover:shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080] ${propertyKey === key ? 'border border-[#9E8C70] shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080]' : '' }`} style={{backgroundImage: `url(${property.property_thumbnail})`}} onClick={() => (handlePropertySelect(key))}>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                       <div className={`w-7 h-7 rounded-full border border-[#7B7B7B] border-[1px] absolute right-5 top-5 ${propertyKey === key ? 'bg-[#9E8C70]' : '' } flex justify-center items-center`}>
-                        <Image src={`images/icons/tick.png`} width={12} height={10} alt="Tick" className={`w-[10px] h-[7.55px] ${propertyKey !== key ? 'hidden' : ''}`} />
+                        <Image src={`${basePath}/images/icons/tick.png`} width={12} height={10} alt="Tick" className={`w-[10px] h-[7.55px] ${propertyKey !== key ? 'hidden' : ''}`} />
                       </div>
                       <div className="flex flex-col gap-2 text-white relative">
                           <h4 className="uppercase text-sm">{property.property_location}</h4>
