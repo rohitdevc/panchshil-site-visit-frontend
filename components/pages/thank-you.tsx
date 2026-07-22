@@ -7,7 +7,7 @@ type PageProps = {
 }
 
 export function ThankYouPage({banner}: PageProps) {
-  const basePath = process.env.NEXT_PUBLIC_PATH || "/";
+  const basePath = process.env.NEXT_PUBLIC_PATH === "/" ? "" : process.env.NEXT_PUBLIC_PATH;
 
   return (
     <main className="relative isolate overflow-hidden h-screen bg-no-repeat bg-cover" style={{backgroundImage: `url(${banner.banner_image})`}}>

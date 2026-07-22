@@ -9,7 +9,7 @@ type PageProps = {
 }
 
 export function HomePage({introduction}: PageProps) {
-  const basePath = process.env.NEXT_PUBLIC_PATH || "/";
+  const basePath = process.env.NEXT_PUBLIC_PATH === "/" ? "" : process.env.NEXT_PUBLIC_PATH;
 
   return (
     <main className="relative isolate overflow-hidden h-screen bg-no-repeat bg-cover" style={{backgroundImage: `url(${introduction.banner_image})`}}>

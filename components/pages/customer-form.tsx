@@ -31,7 +31,7 @@ type PageProps = {
 }
 
 export function CustomerFormPage({property_categories, investment_timelines}: PageProps) {
-  const basePath = process.env.NEXT_PUBLIC_PATH || "/";
+  const basePath = process.env.NEXT_PUBLIC_PATH === "/" ? "" : process.env.NEXT_PUBLIC_PATH;
 
   const [showLoader, updateLoader] = useState(false);
 
