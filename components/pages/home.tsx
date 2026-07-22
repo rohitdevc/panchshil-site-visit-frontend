@@ -24,7 +24,7 @@ export function HomePage({introduction}: PageProps) {
           <h1 id="home-heading" className="text-[clamp(3.3rem,6vw,6.1rem)] leading-tight tracking-[-0.045em] text-white font-zapf-regular">{parser(introduction.intro_description)}</h1>
           <p className="max-w-[510px] text-[14px] leading-[1.5] text-white/65 sm:text-[16px] lg:text-[18px]">{introduction.intro_caption}</p>
           <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-9">
-            <Link href={`${basePath}/customer-form`} className="group inline-flex h-[52px] items-center gap-5 border border-[#9a7951] px-5 text-[15px] text-white transition-colors hover:bg-white/10 sm:h-[58px] sm:px-6 sm:text-[17px] uppercase">
+            <Link href={`/customer-form`} className="group inline-flex h-[52px] items-center gap-5 border border-[#9a7951] px-5 text-[15px] text-white transition-colors hover:bg-white/10 sm:h-[58px] sm:px-6 sm:text-[17px] uppercase">
               Start consultation <GoArrowRight size={20} />
             </Link>
             <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/65 sm:text-[12px] lg:text-[14px]">5 quiet steps · ~3 minutes</p>

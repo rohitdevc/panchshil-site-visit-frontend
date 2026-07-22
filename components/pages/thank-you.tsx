@@ -21,7 +21,7 @@ export function ThankYouPage({banner}: PageProps) {
           </h1>
           <p className="mt-8 max-w-[510px] text-[14px] leading-[1.5] text-white/65 sm:mt-10 sm:text-[16px] lg:text-[18px]">{banner.banner_image_description}</p>
           <div className="mt-10 flex gap-5 sm:mt-14 flex-row">
-            <Link href={``} className="group flex justify-center items-center gap-5 text-[15px] text-white transition-colors sm:text-[17px] uppercase">
+            <Link href={`/`} className="group flex justify-center items-center gap-5 text-[15px] text-white transition-colors sm:text-[17px] uppercase">
               <GoArrowLeft size={20} /> RETURN TO HOME
             </Link>
           </div>

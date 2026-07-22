@@ -5,7 +5,7 @@ export function PanchshilMark() {
   const basePath = process.env.NEXT_PUBLIC_PATH || "/";
   
   return (
-    <Link href="">
+    <Link href="/">
       <Image src={`${basePath}/images/logo.png`} alt="Panchshil Logo" width={74} height={74} loading="eager" />
     </Link>
   );
