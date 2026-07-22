@@ -1,20 +1,62 @@
+import React, { useRef, useEffect } from "react";
+
 type FormStagesProp = {
   step: number;
 }
 
 export function FormStages({step}: FormStagesProp) {
+  const tabRefs = useRef<Record<string, HTMLLIElement | null>>({});
+
+  useEffect(() => {
+    const activeButton = tabRefs.current[step];
+
+    if (activeButton) {
+      activeButton.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+    }
+  }, [step]);
+
+  const stepsData = [
+    {
+      step: 1,
+      stepCount: '01',
+      stepName: 'Personal'
+    },
+    {
+      step: 2,
+      stepCount: '02',
+      stepName: 'Direction'
+    },
+    {
+      step: 3,
+      stepCount: '03',
+      stepName: 'Projects'
+    },
+    {
+      step: 4,
+      stepCount: '04',
+      stepName: 'Configuration'
+    },
+    {
+      step: 5,
+      stepCount: '05',
+      stepName: 'Review'
+    }
+  ]
+
   return (
-    <ul className={`flex justify-center items-center text-right gap-2 tracking-wider text-sm uppercase text-gray-500`}>
-      <li className={`flex flex-col ${step === 1 ? 'text-white' : ''}`}><span>01</span> PERSONAL</li>
-      <li className={`h-[0.5px] w-20 ${step === 1 ? 'bg-white' : 'bg-gray-500'}`}></li>
-      <li className={`flex flex-col ${step === 2 ? 'text-white' : ''}`}><span>02</span> DIRECTION</li>
-      <li className={`h-[0.5px] w-20  ${step === 2 ? 'bg-white' : 'bg-gray-500'}`}></li>
-      <li className={`flex flex-col ${step === 3 ? 'text-white' : ''}`}><span>03</span> PROJECTS</li>
-      <li className={`h-[0.5px] w-20  ${step === 3 ? 'bg-white' : 'bg-gray-500'}`}></li>
-      <li className={`flex flex-col ${step === 4 ? 'text-white' : ''}`}><span>04</span> CONFIGURATION</li>
-      <li className={`h-[0.5px] w-20  ${step === 4 ? 'bg-white' : 'bg-gray-500'}`}></li>
-      <li className={`flex flex-col ${step === 5 ? 'text-white' : ''}`}><span>05</span> REVIEW</li>
-      <li className={`h-[0.5px] w-20  ${step === 5 ? 'bg-white' : 'bg-gray-500'}`}></li>
+    <ul className={`flex lg:justify-end items-center text-right gap-2 tracking-wider text-sm uppercase text-gray-500 overflow-x-auto w-full overflow-hidden`}>
+      {
+        stepsData.map((stepRow, key) => (
+          <React.Fragment key={key}>
+            <li className={`flex flex-col ${step === stepRow.step ? 'text-white' : ''}`} ref={(el) => { if (el) tabRefs.current[stepRow.step] = el}}><span>{stepRow.stepCount}</span> {stepRow.stepName}</li>
+            <li className={`h-[0.5px] w-20 shrink-0 ${step === 1 ? 'bg-white' : 'bg-gray-500'}`}></li>
+          </React.Fragment>
+        ))
+      }
     </ul>
   );
 }

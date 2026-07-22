@@ -6,7 +6,7 @@ export function PanchshilMark() {
   
   return (
     <Link href={basePath}>
-      <Image src={`${basePath}images/logo.png`} alt="Panchshil Logo" width={74} height={74} />
+      <Image src={`${basePath}images/logo.png`} alt="Panchshil Logo" width={74} height={74} loading="eager" />
     </Link>
   );
 }

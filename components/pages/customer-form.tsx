@@ -11,38 +11,9 @@ import BottomNav from "../bottomNav";
 import LineBreak from "../LineBreak";
 import PreviewBlock from "../PreviewBlock";
 import ErrorSpan from "../ErrorSpan";
-
-type PersonalForm = {
-  title: string;
-  firstName: string;
-  lastName: string;
-  countryCode: number;
-  mobileNumber: string;
-  alternateCountryCode: number;
-  alternateNumber: string;
-  email: string;
-  organization: string;
-  designation: string;
-  country: string;
-  pincode: string;
-  city: string;
-  address: string;
-};
-
-type CategoryForm = {
-  categoryName: string;
-}
-
-type PropertyForm = {
-  propertyName: string;
-  propertyLocation: string;
-}
-
-type ConfigurationForm = {
-  configurationName: string;
-  intentedUse: string;
-  investmentTimeline: string;
-}
+import { CustomerFormErrors, PersonalForm, PropertyForm, CategoryForm, ConfigurationForm } from "@/types/forms";
+import { PropertyDataProps } from "@/types/api";
+import { getIndiaPincode } from 'india-pincode/browser'
 
 const countryArray = Object.values(countries)
 .map(c => ({
@@ -54,33 +25,35 @@ const countryArray = Object.values(countries)
   return a.name.localeCompare(b.name);
 });
 
-type CustomerFormErrors = {
-  title?: string;
-  firstName?: string,
-  lastName?: string,
-  countryCode?: string,
-  mobileNumber?: string,
-  alternateCountryCode?: string,
-  alternateNumber?: string,
-  email?: string,
-  organization?: string,
-  designation?: string,
-  country?: string,
-  pincode?: string,
-  city?: string,
-  address?: string,
-  configurationName?: string,
-  intentedUse?: string,
-  investmentTimeline?: string
+type PageProps = {
+  property_categories: PropertyDataProps[]
+  investment_timelines: string[]
 }
 
-export function CustomerFormPage() {
+export function CustomerFormPage({property_categories, investment_timelines}: PageProps) {
   const basePath = process.env.NEXT_PUBLIC_PATH || "/";
+
+  const [showLoader, updateLoader] = useState(false);
 
   const [ip, setIp] = useState("");
   const [errors, setErrors] = useState<CustomerFormErrors>({});
 
-  const [currentStep, updateCurrentStep] = useState(2);
+  const [currentStep, updateCurrentStep] = useState(1);
+
+  const searchPinCode = async (pinCode: string) => {
+    try {
+      const pin = await getIndiaPincode();
+      const res = pin.getByPincode(pinCode);
+      
+      if(res.data && res.data.data && res.data.data.length > 0) {
+        return res.data.data[0].district;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+};
 
   const personalFormRef = useRef<HTMLFormElement>(null);
   const categoryFormRef = useRef<HTMLFormElement>(null);
@@ -98,7 +71,7 @@ export function CustomerFormPage() {
       getIp();
   }, []);
 
-  const [personalForm, setPersonalForm] = useState<PersonalForm>({
+  const initialPersonalForm = {
     title: "",
     firstName: "",
     lastName: "",
@@ -113,146 +86,57 @@ export function CustomerFormPage() {
     pincode: "",
     city: "",
     address: "",
-  });
+  }
 
-  const [categoryForm, setCategoryForm] = useState<CategoryForm>({
+  const initialCategoryForm = {
     categoryName: ""
-  })
+  }
 
-  const [propertyForm, setPropertyForm] = useState<PropertyForm>({
+  const initialPropertyForm = {
     propertyName: "",
     propertyLocation: ""
-  })
+  }
 
-  const [configurationForm, setConfigurationForm] = useState<ConfigurationForm>({
+  const initialConfigurationForm = {
     configurationName: "",
     intentedUse: "",
     investmentTimeline: ""
-  })
+  }
+
+  const [personalForm, setPersonalForm] = useState<PersonalForm>(initialPersonalForm);
+
+  const [categoryForm, setCategoryForm] = useState<CategoryForm>(initialCategoryForm);
+
+  const [propertyForm, setPropertyForm] = useState<PropertyForm>(initialPropertyForm);
+
+  const [configurationForm, setConfigurationForm] = useState<ConfigurationForm>(initialConfigurationForm);
 
   const [propertyCategoryKey, setPropertyCategoryKey] = useState(-1);
 
   const [propertyKey, setPropertyKey] = useState(-1);
 
-  const property_categories = [
-    {
-      "property_category_name": "Residential",
-      "property_category_caption": "Private Residences",
-      "property_category_description": "Villas, towers and curated homes designed around light, privacy and considered living.",
-      "property_category_thumbnail": "/properties/residential-489447835.webp",
-      "property_category_intended_uses": [
-        "Self Occupancy",
-        "Investment",
-        "Rental"
-      ],
-      "properties": [
-        {
-          "property_name": "YOOVillas",
-          "property_location": "Kharadi, Pune",
-          "property_description": "Limited collection of designer villas with private landscapes.",
-          "property_thumbnail": "/property/yoo-villas-531202201.webp",
-          "property_configurations": [
-            "4.5 BHK"
-          ]
-        },
-        {
-          "property_name": "Trump Towers",
-          "property_location": "Kalyani Nagar, Pune",
-          "property_description": "Iconic residences with skyline-facing interiors and concierge living.",
-          "property_thumbnail": "/property/trump-towers-281926969.webp",
-          "property_configurations": [
-            "4.5 BHK"
-          ]
-        },
-        {
-          "property_name": "YOOPune",
-          "property_location": "Hadapsar, Pune",
-          "property_description": "Designer homes interpreted through a contemporary residential language.",
-          "property_thumbnail": "/property/yoo-pune-560118467.webp",
-          "property_configurations": []
-        }
-      ]
-    },
-    {
-      "property_category_name": "Office Parks",
-      "property_category_caption": "Workplace",
-      "property_category_description": "Business environments with architectural integrity and refined common ground.",
-      "property_category_thumbnail": "/properties/office-parks-163002376.webp",
-      "property_category_intended_uses": [
-        "Office",
-        "Retail Shop",
-        "Restaurant / Café"
-      ],
-      "properties": [
-        {
-          "property_name": "Panchshil Avenue",
-          "property_location": "Viman Nagar, Pune",
-          "property_description": "A grade-A workplace district arranged around landscaped courtyards.",
-          "property_thumbnail": "/property/panchshil-avenue-954260254.webp",
-          "property_configurations": []
-        },
-        {
-          "property_name": "Golden Bell Plaza",
-          "property_location": "Koregaon Park, Pune",
-          "property_description": "A boutique commercial address favoured by global brands.",
-          "property_thumbnail": "/property/golden-bell-plaza-416169413.webp",
-          "property_configurations": []
-        }
-      ]
-    },
-    {
-      "property_category_name": "Plots",
-      "property_category_caption": "Land Parcels",
-      "property_category_description": "Strategic land holdings within master-planned, future-facing developments.",
-      "property_category_thumbnail": "/properties/plots-575226281.webp",
-      "property_category_intended_uses": [
-        "Residential Development",
-        "Commercial Development",
-        "Agricultural Use"
-      ],
-      "properties": [
-        {
-          "property_name": "Villa Land Parcels",
-          "property_location": "Mulshi Valley",
-          "property_description": "Curated parcels within a guarded, master-planned valley estate.",
-          "property_thumbnail": "/property/villa-land-parcels-410208221.webp",
-          "property_configurations": [
-            "10,000 – 20,000 sq ft"
-          ]
-        }
-      ]
-    },
-    {
-      "property_category_name": "Hospitality",
-      "property_category_caption": "Landmark & Other",
-      "property_category_description": "Hotels, retail and landmark developments shaped by experience and atmosphere.",
-      "property_category_thumbnail": "/properties/hospitality-111429650.webp",
-      "property_category_intended_uses": [],
-      "properties": [
-        {
-          "property_name": "The Ritz-Carlton, Pune",
-          "property_location": "Golf Course Avenue",
-          "property_description": "A landmark hospitality address operated to global standards.",
-          "property_thumbnail": "/property/the-ritz-carlton-pune-928278199.webp",
-          "property_configurations": [
-            "Suite Residence",
-            "Branded Apartment"
-          ]
-        }
-      ]
-    }
-  ]
-
   const propertyCategory = property_categories[propertyCategoryKey];
 
   const property = propertyCategory?.properties[propertyKey];
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = async (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     
     setPersonalForm((prev) => ({...prev, [name]: value}));
     setConfigurationForm((prev) => ({...prev, [name]: value}));
     setErrors(prev => ({ ...prev, [name]: undefined}));
+  }
+
+  const findCityName = async (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    if(name === "pincode" && value.length === 6 && personalForm.country === "India") {
+      const cityName = await searchPinCode(value);
+
+      if(cityName) {
+        setPersonalForm((prev) => ({...prev, city: cityName}));
+      }
+    }
   }
 
   const handleCategorySelect = (key: number) => {
@@ -300,6 +184,7 @@ export function CustomerFormPage() {
   const addressRef = useRef<HTMLInputElement | null>(null);
   const timelineRef = useRef<HTMLSelectElement | null>(null);
 
+  /*
   const refMap: Record<string, React.RefObject<HTMLInputElement | HTMLSelectElement | null>> = {
     title: titleRef,
     firstName: firstNameRef,
@@ -316,59 +201,115 @@ export function CustomerFormPage() {
     city: cityRef,
     address: addressRef,
     investmentTimeline: timelineRef
-  };
+  }; */
 
-  const personalFormHandleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const runPersonalFormErrorCheck = () => {
+    let response = false;
 
     if(isEmpty(personalForm.title)) {
       setErrors({title: 'Please select a title'});
       titleRef.current?.focus();
-      return;
+      return response;
     }
 
     if(isEmpty(personalForm.firstName)) {
       setErrors({firstName: 'Please enter your first name'});
       firstNameRef.current?.focus();
-      return;
+      return response;
     }
 
     if(isEmpty(personalForm.lastName)) {
       setErrors({lastName: 'Please enter your last name'});
       lastNameRef.current?.focus();
-      return;
+      return response;
     }
 
     if(isEmpty(personalForm.mobileNumber)) {
       setErrors({mobileNumber: 'Please enter your mobile number'});
       mobileNumberRef.current?.focus();
-      return;
+      return response;
     } else if(!isMobilePhone(`${personalForm.countryCode}${personalForm.mobileNumber}`, 'any')) {
       setErrors({mobileNumber: 'Please enter a valid mobile number'});
       mobileNumberRef.current?.focus();
-      return;
+      return response;
     }
 
     if(!isEmpty(personalForm.alternateNumber) && !isMobilePhone(`${personalForm.alternateCountryCode}${personalForm.alternateNumber}`, 'any')) {
       setErrors({alternateNumber: 'Please enter a valid mobile number'});
       alternateNumberRef.current?.focus();
-      return;
+      return response;
     }
 
     if(isEmpty(personalForm.email)) {
       setErrors({email: 'Please enter your email address'});
       emailAddressRef.current?.focus();
-      return;
+      return response;
     } else if(!isEmail(personalForm.email)) {
       setErrors({email: 'Please enter a valid email address'});
       emailAddressRef.current?.focus();
-      return;
+      return response;
     }
 
     if(isEmpty(personalForm.pincode)) {
       setErrors({pincode: 'Please enter your PIN code'});
       pinCodeRef.current?.focus();
-      return;
+      return response;
+    }
+
+    response = true;
+
+    return response;
+  }
+
+  const runCategoryFormErrorCheck = () => {
+    let response = false;
+
+    if(isEmpty(categoryForm.categoryName)) {
+      alert("Please select a category")
+      return response;
+    }
+
+    response = true;
+
+    return response;
+  }
+
+  const runPropertyFormErrorCheck = () => {
+    let response = false;
+
+    if(isEmpty(propertyForm.propertyName)) {
+      alert("Please select a property");
+      return response;
+    }
+
+    response = true;
+
+    return response;
+  }
+
+  const runConfigurationFormErrorCheck = () => {
+    let response = false;
+
+    if(isEmpty(configurationForm.configurationName)) {
+      setErrors({configurationName: 'Please select a configuration'});
+      return response;
+    }
+
+    if(isEmpty(configurationForm.intentedUse)) {
+      setErrors({intentedUse: 'Please select your intended use'});
+      return response;
+    }
+
+    response = true;
+
+    return response;
+  }
+
+  const personalFormHandleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if(!runPersonalFormErrorCheck()) {
+      return false;
     }
 
     updateCurrentStep(2);
@@ -377,9 +318,8 @@ export function CustomerFormPage() {
   const categoryFormHandleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if(isEmpty(categoryForm.categoryName)) {
-      alert("Please select a category")
-      return;
+    if(!runCategoryFormErrorCheck()) {
+      return false;
     }
 
     updateCurrentStep(3);
@@ -388,9 +328,8 @@ export function CustomerFormPage() {
   const propertyFormHandleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if(isEmpty(propertyForm.propertyName)) {
-      alert("Please select a property");
-      return;
+    if(!runPropertyFormErrorCheck()) {
+      return false;
     }
 
     updateCurrentStep(4);
@@ -399,23 +338,105 @@ export function CustomerFormPage() {
   const configurationFormHandleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if(isEmpty(configurationForm.configurationName)) {
-      setErrors({configurationName: 'Please select a configuration'});
-      return
-    }
-
-    if(isEmpty(configurationForm.intentedUse)) {
-      setErrors({intentedUse: 'Please select your intended use'});
-      return
+    if(!runConfigurationFormErrorCheck()) {
+      return false;
     }
 
     updateCurrentStep(5);
   };
 
-  const previewFormHandleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+  const previewFormHandleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    
+    if(!runPersonalFormErrorCheck()) {
+      return false;
+    }
+
+    if(!runCategoryFormErrorCheck()) {
+      return false;
+    }
+
+    if(!runPropertyFormErrorCheck()) {
+      return false;
+    }
+
+    if(!runConfigurationFormErrorCheck()) {
+      return false;
+    }
+
+    updateLoader(true);
+
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+
+    try {
+      const payload = {
+        customer_title: personalForm.title,
+        customer_full_name: personalForm.firstName + ' ' + personalForm.lastName,
+        customer_mobile_number: '+' + personalForm.countryCode + personalForm.mobileNumber,
+        customer_alternate_number: personalForm.alternateNumber ? '+' + personalForm.alternateCountryCode + personalForm.alternateNumber : null,
+        customer_email_address: personalForm.email,
+        customer_organization_name: personalForm.organization,
+        customer_designation: personalForm.designation,
+        customer_country_name: personalForm.country,
+        customer_pin_code: personalForm.pincode,
+        customer_city_name: personalForm.city,
+        customer_address: personalForm.address,
+        customer_property_category_name: categoryForm.categoryName,
+        customer_property_name: propertyForm.propertyName,
+        customer_property_configuration: configurationForm.configurationName,
+        customer_property_intent: configurationForm.intentedUse,
+        customer_property_investment_timeline: configurationForm.investmentTimeline,
+        ip_address: ip,
+        referer_url: window.location.href
+      };
+
+      const response = await fetch(basePath + "api/customer-form", {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+
+      if (!response.ok) {
+        const err = await response.json();
+
+        if(err.error) {
+          let error_response = JSON.parse(err.error);
+
+          if(typeof error_response === "object" && error_response !== null && !Array.isArray(error_response)) {
+            error_response = Object.values(error_response);
+
+            const { path, msg } = error_response[0][0];
+
+            const error_message = msg;
+
+            alert(error_message);
+          }
+
+          return false;
+        }
+      }
+
+      const data = await response.json();
+
+      if(data.success) {
+        setPersonalForm(initialPersonalForm);
+        setPropertyCategoryKey(-1);
+        setCategoryForm(initialCategoryForm);
+        setPropertyKey(-1);
+        setPropertyForm(initialPropertyForm);
+        setConfigurationForm(initialConfigurationForm);
+
+        if(!data.result) return false;
+
+        window.location.href = basePath + 'thank-you';
+      }
+    } catch(error) {
+      console.error(error);
+    } finally {
+      updateLoader(false);
+    }
   };
 
   const [displayStep, setDisplayStep] = useState(currentStep);
@@ -436,30 +457,31 @@ export function CustomerFormPage() {
 
   return (
     <main className="relative isolate bg-black">
-      <div className="relative z-10 flex min-h-svh flex-col px-6 py-7 sm:px-10 sm:py-10 lg:px-[5vw] lg:py-[6.7vh]">
-        <header className="flex items-start justify-between">
+    <div className={`h-full w-full fixed top-0 left-0 z-15 cursor-wait bg-center bg-no-repeat bg-white opacity-50 ${showLoader === false ? 'hidden': ''}`} style={{backgroundImage: `url(${basePath}images/img_loader.gif)`}}></div>
+      <div className="relative z-10 flex flex-col px-6 py-7 sm:px-10 sm:py-10 lg:px-[5vw] lg:py-[6.7vh]">
+        <header className="flex flex-col lg:flex-row items-start gap-5 lg:justify-between">
           <PanchshilMark />
           <FormStages step={currentStep} />
         </header>
         {
           displayStep === 1 && (
-          <section className={`flex items-stretch pt-10 gap-20 transition-all duration-300 ease-in-out overflow-hidden ${fading ? "opacity-0" : "opacity-100"}`}>
-            <div style={{backgroundImage: `url(${basePath}images/form/step-01.png)`}} className="bg-no-repeat bg-cover bg-center w-2xl relative px-10 py-10">
+          <section className={`flex flex-col lg:flex-row lg:items-stretch pt-10 gap-10 xl:gap-20 transition-all duration-300 ease-in-out overflow-hidden ${fading ? "opacity-0" : "opacity-100"}`}>
+            <div style={{backgroundImage: `url(${basePath}images/form/step-01.png)`}} className="bg-no-repeat bg-cover bg-center w-full lg:w-2xl relative p-5 lg:p-10">
               <div className="absolute inset-0 bg-black/40"></div>
-              <div className="flex flex-col relative h-full">
+              <div className="flex flex-col relative h-full min-h-60">
                 <p className="uppercase text-[#b29a75] tracking-[0.2em]">Step 01 / Personal</p>
-                <div className="mt-auto flex flex-col gap-10">
-                  <h3 className={`font-zapf-regular text-[30px]`}>A consultation begins with knowing you.</h3>
+                <div className="mt-auto flex flex-col gap-5 lg:gap-10">
+                  <h3 className={`font-zapf-regular text-lg lg:text-[30px]`}>A consultation begins with knowing you.</h3>
                   <p className={` text-base leading-[1.5] text-white/65`}>Your details remain private. They allow our team to prepare a considered, personalised response — the way Panchshil has always served its patrons.</p>
                 </div>
               </div>
             </div>
             <form ref={personalFormRef} onSubmit={personalFormHandleSubmit} className="flex flex-col gap-5 w-full tracking-wider text-[#ACAAA3]" autoComplete="off">
-              <div className="flex gap-5 justify-between">
-                <div className="flex flex-col gap-3">
+              <div className="flex flex-col lg:flex-row gap-5 lg:justify-between">
+                <div className="flex flex-col gap-3 relative">
                   <label>Title</label>
                   <div className="relative">
-                    <select name="title" value={personalForm.title} onChange={handleChange} className="appearance-none !w-35" ref={titleRef}>
+                    <select name="title" value={personalForm.title} onChange={handleChange} className="appearance-none w-full lg:!w-35" ref={titleRef}>
                       <option value="">Select Title</option>
                       <option>Mr.</option>
                       <option>Mrs.</option>
@@ -469,8 +491,8 @@ export function CustomerFormPage() {
                       <option>Col.</option>
                     </select>
                     <SelectTagArrow />
-                    <ErrorSpan error_message={errors.title} />
                   </div>
+                  <ErrorSpan error_message={errors.title} />
                 </div>
                 <div className="flex flex-col gap-3 w-full relative">
                   <label>First Name</label>
@@ -483,11 +505,11 @@ export function CustomerFormPage() {
                   <ErrorSpan error_message={errors.lastName} />
                 </div>
               </div>
-              <div className="flex gap-5 justify-between">
-                <div className="flex flex-col gap-3 w-30">
+              <div className="flex flex-col lg:flex-row gap-5 lg:justify-between">
+                <div className="flex flex-col gap-3 w-full lg:w-30 relative">
                   <label>Code</label>
                   <div className="relative">
-                    <select name="countryCode" value={personalForm.countryCode} onChange={handleChange} className="appearance-none !w-35" ref={countryCodeRef}>
+                    <select name="countryCode" value={personalForm.countryCode} onChange={handleChange} className="appearance-none w-full lg:!w-35" ref={countryCodeRef}>
                       {
                         countryArray && countryArray.length > 0 && countryArray.map((country, key) => (
                           <option key={key} value={country.phone}>+{country.phone} {country.name}</option>
@@ -495,18 +517,18 @@ export function CustomerFormPage() {
                       }
                     </select>
                     <SelectTagArrow />
-                    <ErrorSpan error_message={errors.countryCode} />
                   </div>
+                  <ErrorSpan error_message={errors.countryCode} />
                 </div>
                 <div className="flex flex-col gap-3 w-full relative">
                   <label>Mobile Number</label>
                   <input type="tel" name="mobileNumber" value={personalForm.mobileNumber} onChange={handleChange} inputMode="numeric" ref={mobileNumberRef} />
                   <ErrorSpan error_message={errors.mobileNumber} />
                 </div>
-                <div className="flex flex-col gap-3 w-30">
+                <div className="flex flex-col gap-3 w-full lg:w-30 relative">
                   <label>Code</label>
                   <div className="relative">
-                    <select name="alternateCountryCode" value={personalForm.alternateCountryCode} onChange={handleChange} className="appearance-none !w-35" ref={alternateCountryCodeRef}>
+                    <select name="alternateCountryCode" value={personalForm.alternateCountryCode} onChange={handleChange} className="appearance-none w-full lg:!w-35" ref={alternateCountryCodeRef}>
                       {
                         countryArray && countryArray.length > 0 && countryArray.map((country, key) => (
                           <option key={key} value={country.phone}>+{country.phone} {country.name}</option>
@@ -514,8 +536,8 @@ export function CustomerFormPage() {
                       }
                     </select>
                     <SelectTagArrow />
-                    <ErrorSpan error_message={errors.alternateCountryCode} />
                   </div>
+                  <ErrorSpan error_message={errors.alternateCountryCode} />
                 </div>
                 <div className="flex flex-col gap-3 w-full relative">
                   <label>Alternate Number <span className="text-gray-500 text-[10px]">(Optional)</span></label>
@@ -528,7 +550,7 @@ export function CustomerFormPage() {
                 <input type="email" name="email" value={personalForm.email} onChange={handleChange} ref={emailAddressRef} />
                 <ErrorSpan error_message={errors.email} />
               </div>
-              <div className="flex gap-5 justify-between">
+              <div className="flex flex-col lg:flex-row gap-5 lg:justify-between">
                 <div className="flex flex-col gap-3 w-full relative">
                   <label>Organization <span className="text-gray-500 text-[10px]">(Optional)</span></label>
                   <input type="text" name="organization" value={personalForm.organization} onChange={handleChange} ref={organizationRef} />
@@ -540,7 +562,7 @@ export function CustomerFormPage() {
                   <ErrorSpan error_message={errors.designation} />
                 </div>
               </div>
-              <div className="flex gap-5 justify-between">
+              <div className="flex flex-col lg:flex-row gap-5 lg:justify-between">
                 <div className="flex flex-col gap-3 w-full">
                   <label>Country</label>
                   <div className="relative">
@@ -557,7 +579,7 @@ export function CustomerFormPage() {
                 </div>
                 <div className="flex flex-col gap-3 w-full relative">
                   <label>Pincode</label>
-                  <input type="text" name="pincode" value={personalForm.pincode} onChange={handleChange} ref={pinCodeRef} />
+                  <input type="text" name="pincode" value={personalForm.pincode} onChange={handleChange} onBlur={findCityName} ref={pinCodeRef} />
                   <ErrorSpan error_message={errors.pincode} />
                 </div>
                 <div className="flex flex-col gap-3 w-full relative">
@@ -588,7 +610,7 @@ export function CustomerFormPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {
                   property_categories && property_categories.length > 0 && property_categories.map((property_category, key) => (
-                    <div key={key} className={`bg-no-repeat bg-cover w-xs px-7 py-10 h-100 relative cursor-pointer transition-all duration-300 hover:border border-[#9E8C70] shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080] ${propertyCategoryKey === key ? 'border border-[#9E8C70] shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080]' : '' }`} style={{backgroundImage: `url(images/${property_category.property_category_thumbnail})`}} onClick={() => (handleCategorySelect(key))}>
+                    <div key={key} className={`bg-no-repeat bg-cover w-xs px-7 py-10 h-100 relative cursor-pointer transition-all duration-300 hover:border border-[#9E8C70] hover:shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080] ${propertyCategoryKey === key ? 'border border-[#9E8C70] shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080]' : '' }`} style={{backgroundImage: `url(${property_category.property_category_thumbnail})`}} onClick={() => (handleCategorySelect(key))}>
                       <div className="absolute inset-0 bg-black/70"></div>
                       <div className={`w-7 h-7 rounded-full border border-[#7B7B7B] border-[1px] absolute right-5 top-5 ${propertyCategoryKey === key ? 'bg-[#9E8C70]' : '' } flex justify-center items-center`}>
                         <Image src={`${basePath}images/icons/tick.png`} width={12} height={10} alt="Tick" className={`w-[10px] h-[7.55px] ${propertyCategoryKey !== key ? 'hidden' : ''}`} />
@@ -611,7 +633,7 @@ export function CustomerFormPage() {
         }
         {
           displayStep === 3 && propertyCategory && (
-          <section className={`flex flex-col pt-10 gap-20 transition-all duration-300 ease-in-out ${fading ? "opacity-0" : "opacity-100"}`}>
+          <section className={`flex flex-col pt-10 gap-10 transition-all duration-300 ease-in-out ${fading ? "opacity-0" : "opacity-100"}`}>
             <div className="flex flex-col gap-5 max-w-[650px]">
               <p className="uppercase text-[#b29a75] tracking-[0.2em]">Step 03 / Curated Selection</p>
               <h3 className={`font-zapf-regular text-[30px]`}>Choose the developments that interest you.</h3>
@@ -619,7 +641,7 @@ export function CustomerFormPage() {
             </div>
             <form ref={propertyFormRef} onSubmit={propertyFormHandleSubmit} className="flex flex-col gap-5 w-full tracking-wider text-[#ACAAA3]" autoComplete="off">
               <p className="uppercase text-[#b29a75] tracking-[0.2em]">{propertyCategory.property_category_caption}</p>
-              <div className="flex justify-between">
+              <div className="flex flex-col gap-5 lg:flex-row lg:justify-between">
                 <h3 className={`font-zapf-regular text-[30px]`}>{propertyCategory.property_category_name}</h3>
                 <span className=" uppercase">{propertyCategory.properties.length} {propertyCategory.properties.length === 1 ? 'address' : 'addresses' }</span>
               </div>
@@ -627,7 +649,7 @@ export function CustomerFormPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-10">
                 {
                   propertyCategory.properties && propertyCategory.properties.length > 0 && propertyCategory.properties.map((property, key) => (
-                    <div key={key} className={`bg-no-repeat bg-cover w-full px-7 py-7 h-100 relative flex items-end cursor-pointer transition-all duration-300 hover:border border-[#9E8C70] shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080] ${propertyKey === key ? 'border border-[#9E8C70] shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080]' : '' }`} style={{backgroundImage: `url(images/${property.property_thumbnail})`}} onClick={() => (handlePropertySelect(key))}>
+                    <div key={key} className={`bg-no-repeat bg-cover w-full px-7 py-7 h-100 relative flex items-end cursor-pointer transition-all duration-300 hover:border border-[#9E8C70] hover:shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080] ${propertyKey === key ? 'border border-[#9E8C70] shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080]' : '' }`} style={{backgroundImage: `url(${property.property_thumbnail})`}} onClick={() => (handlePropertySelect(key))}>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                       <div className={`w-7 h-7 rounded-full border border-[#7B7B7B] border-[1px] absolute right-5 top-5 ${propertyKey === key ? 'bg-[#9E8C70]' : '' } flex justify-center items-center`}>
                         <Image src={`${basePath}images/icons/tick.png`} width={12} height={10} alt="Tick" className={`w-[10px] h-[7.55px] ${propertyKey !== key ? 'hidden' : ''}`} />
@@ -682,8 +704,11 @@ export function CustomerFormPage() {
                 <div className="relative">
                   <select name="investmentTimeline" value={configurationForm.investmentTimeline} onChange={handleChange} className="appearance-none" ref={timelineRef}>
                     <option value="">-</option>
-                    <option value="Within 3 months">Within 3 months</option>
-                    <option value="Within 6 months">Within 6 months</option>
+                    {
+                      investment_timelines && investment_timelines.length > 0 && investment_timelines.map((investment_timeline, key) => (
+                        <option value={investment_timeline} key={key}>{investment_timeline}</option>
+                      ))
+                    }
                   </select>
                   <SelectTagArrow />
                 </div>
@@ -702,10 +727,10 @@ export function CustomerFormPage() {
               <h3 className={`font-zapf-regular text-[30px]`}>A quiet review before we begin.</h3>
               <p className={` text-base leading-[1.5] text-white/65`}>Edit any section. Submit when ready — a Panchshil representative will reach out personally.</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              <div className="border border-[#232323] p-10 flex flex-col gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 text-sm lg:text-base">
+              <div className="border border-[#232323] p-5 lg:p-10 flex flex-col gap-5">
                 <div className="flex justify-between">
-                  <h2 className={`font-zapf-regular text-[32px]`}>Personal</h2>
+                  <h2 className={`font-zapf-regular text-[25px] lg:text-[32px]`}>Personal</h2>
                   <button className="cursor-pointer uppercase text-[#b29a75] tracking-[0.2em]" onClick={() => updateCurrentStep(1)}>Edit</button>
                 </div>
                 <LineBreak />
@@ -720,17 +745,17 @@ export function CustomerFormPage() {
                 <PreviewBlock section_heading="City" section_value={`${personalForm.city}`} />
                 <PreviewBlock section_heading="Address" section_value={`${personalForm.address}`} />
               </div>
-              <div className="border border-[#232323] p-10 flex flex-col gap-5">
+              <div className="border border-[#232323] p-5 lg:p-10 flex flex-col gap-5">
                 <div className="flex justify-between">
-                  <h2 className={`font-zapf-regular text-[32px]`}>Direction</h2>
+                  <h2 className={`font-zapf-regular text-[25px] lg:text-[32px]`}>Direction</h2>
                   <button className="cursor-pointer uppercase text-[#b29a75] tracking-[0.2em]" onClick={() => updateCurrentStep(2)}>Edit</button>
                 </div>
                 <PreviewBlock section_heading="Category" section_value={`${categoryForm.categoryName}`} />
                 <PreviewBlock section_heading="Property" section_value={`${propertyForm.propertyName}`} />
               </div>
-              <div className="border border-[#232323] p-10 flex flex-col gap-5">
+              <div className="border border-[#232323] p-5 lg:p-10 flex flex-col gap-5">
                 <div className="flex justify-between">
-                  <h2 className={`font-zapf-regular text-[32px]`}>{propertyForm.propertyName}</h2>
+                  <h2 className={`font-zapf-regular text-[25px] lg:text-[32px]`}>{propertyForm.propertyName}</h2>
                   <button className="cursor-pointer uppercase text-[#b29a75] tracking-[0.2em]" onClick={() => updateCurrentStep(3)}>Edit</button>
                 </div>
 
@@ -741,8 +766,8 @@ export function CustomerFormPage() {
                 <PreviewBlock section_heading="Timeline" section_value={`${configurationForm.investmentTimeline}`} />
               </div>
             </div>
-            <div className="border border-[#232323] p-10 flex flex-col gap-5 w-full">
-              <h2 className={`font-zapf-regular text-[32px]`}>Consent</h2>
+            <div className="border border-[#232323] p-5 lg:p-10 flex flex-col gap-5 w-full">
+              <h2 className={`font-zapf-regular text-[25px] lg:text-[32px]`}>Consent</h2>
               <p className=" text-white text-[16px]">By confirming, you agree to be contacted by a Panchshil representative regarding your enquiry. Your details remain confidential.</p>
             </div>
             <BottomNav step={4} updateCurrentStep={updateCurrentStep} />
