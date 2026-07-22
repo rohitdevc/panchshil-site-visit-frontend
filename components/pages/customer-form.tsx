@@ -63,7 +63,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
 
   useEffect(() => {
       async function getIp() {
-        const res = await fetch(basePath + "api/ip");
+        const res = await fetch(basePath + "/api/ip");
         const data = await res.json();
         setIp(data.ip);
       }
