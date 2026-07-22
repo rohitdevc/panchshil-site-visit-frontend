@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
 		root: __dirname,
 	},
 
+	basePath: process.env.NEXT_PUBLIC_PATH === "/" ? "" : process.env.NEXT_PUBLIC_PATH,
+
 	images: {
 		remotePatterns: [
 			{
@@ -17,11 +19,19 @@ const nextConfig: NextConfig = {
 			}
 		]
 	},
-
-	allowedDevOrigins: ['192.168.0.197'],
 	
 	async headers() {
 		const headers = [];
+
+		headers.push({
+			source: "/(.*)",
+			headers: [
+				{
+					key: "X-Robots-Tag",
+					value: "noindex, nofollow"
+				},
+			],
+		});
 		
 		if (isNetlifyDomain) {
 			headers.push({
