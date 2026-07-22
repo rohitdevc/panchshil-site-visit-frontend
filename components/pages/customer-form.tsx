@@ -63,7 +63,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
 
   useEffect(() => {
       async function getIp() {
-        const res = await fetch(basePath + "/api/ip");
+        const res = await fetch("/api/ip");
         const data = await res.json();
         setIp(data.ip);
       }
@@ -390,7 +390,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
         referer_url: window.location.href
       };
 
-      const response = await fetch(basePath + "/api/customer-form", {
+      const response = await fetch("api/customer-form", {
         method: "POST",
         body: JSON.stringify(payload),
         headers: {
@@ -430,7 +430,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
 
         if(!data.result) return false;
 
-        window.location.href = basePath + '/thank-you';
+        window.location.href = 'thank-you';
       }
     } catch(error) {
       console.error(error);
