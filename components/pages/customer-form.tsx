@@ -4,7 +4,7 @@ import { PanchshilMark } from "../panchshil-mark";
 import { FormStages } from "../form-stages";
 import { useState, useRef, useEffect, ChangeEvent } from "react";
 import Image from "next/image";
-import { isEmail, isEmpty, isMobilePhone, isLength } from 'validator';
+import { isEmail, isEmpty, isMobilePhone } from 'validator';
 import { countries } from 'countries-list'
 import SelectTagArrow from "../select-tag-arrow";
 import BottomNav from "../bottomNav";
@@ -14,6 +14,7 @@ import ErrorSpan from "../ErrorSpan";
 import { CustomerFormErrors, PersonalForm, PropertyForm, CategoryForm, ConfigurationForm } from "@/types/forms";
 import { PropertyDataProps } from "@/types/api";
 import { getIndiaPincode } from 'india-pincode/browser'
+import { useRouter } from "next/navigation";
 
 const countryArray = Object.values(countries)
 .map(c => ({
@@ -32,6 +33,8 @@ type PageProps = {
 
 export function CustomerFormPage({property_categories, investment_timelines}: PageProps) {
   const basePath = process.env.NEXT_PUBLIC_PATH === "/" ? "" : process.env.NEXT_PUBLIC_PATH;
+
+  const router = useRouter();
 
   const [showLoader, updateLoader] = useState(false);
 
@@ -417,6 +420,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
       const data = await response.json();
 
       if(data.success) {
+        updateCurrentStep(1);
         setPersonalForm(initialPersonalForm);
         setPropertyCategoryKey(-1);
         setCategoryForm(initialCategoryForm);
@@ -425,8 +429,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
         setConfigurationForm(initialConfigurationForm);
 
         if(!data.result) return false;
-
-        window.location.href = basePath + '/thank-you';
+        router.push("/thank-you");
       }
     } catch(error) {
       console.error(error);
@@ -461,7 +464,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
         </header>
         {
           displayStep === 1 && (
-          <section className={`flex flex-col lg:flex-row lg:items-stretch pt-10 gap-10 xl:gap-20 transition-all duration-300 ease-in-out overflow-hidden ${fading ? "opacity-0" : "opacity-100"}`}>
+          <section className={`flex flex-col lg:flex-row lg:items-stretch pt-10 gap-10 xl:gap-20 transition-all duration-300 ease-in-out overflow-hidden motion-opacity-in-0 motion-duration-1200 motion-ease-out ${fading ? "opacity-0" : "opacity-100"}`}>
             <div style={{backgroundImage: `url(${basePath}/images/form/step-01.png)`}} className="bg-no-repeat bg-cover bg-center w-full lg:w-2xl relative p-5 lg:p-10">
               <div className="absolute inset-0 bg-black/40"></div>
               <div className="flex flex-col relative h-full min-h-60">
@@ -472,7 +475,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
                 </div>
               </div>
             </div>
-            <form ref={personalFormRef} onSubmit={personalFormHandleSubmit} className="flex flex-col gap-5 w-full tracking-wider text-[#ACAAA3]" autoComplete="off">
+            <form ref={personalFormRef} onSubmit={personalFormHandleSubmit} className="flex flex-col gap-5 w-full tracking-wider text-[#ACAAA3] motion-preset-slide-up motion-opacity-in-0 motion-blur-in-sm motion-duration-800 ease-(--ease-cinematic)" autoComplete="off">
               <div className="flex flex-col lg:flex-row gap-5 lg:justify-between">
                 <div className="flex flex-col gap-3 relative">
                   <label>Title</label>
@@ -596,7 +599,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
         }
         {
           displayStep === 2 && (
-          <section className={`flex flex-col pt-10 gap-20 transition-all duration-300 ease-in-out ${fading ? "opacity-0" : "opacity-100"}`}>
+          <section className={`flex flex-col pt-10 gap-20 transition-all duration-300 ease-in-out motion-preset-slide-up motion-opacity-in-0 motion-blur-in-sm motion-duration-800 ease-(--ease-cinematic) ${fading ? "opacity-0" : "opacity-100"}`}>
             <div className="flex flex-col gap-5 max-w-[650px]">
               <p className="uppercase text-[#b29a75] tracking-[0.2em]">Step 02 / Direction</p>
               <h3 className={`font-zapf-regular text-[30px]`}>What draws your attention?</h3>
@@ -606,7 +609,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {
                   property_categories && property_categories.length > 0 && property_categories.map((property_category, key) => (
-                    <div key={key} className={`bg-no-repeat bg-cover w-xs px-7 py-10 h-100 relative cursor-pointer transition-all duration-300 hover:border border-[#9E8C70] hover:shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080] ${propertyCategoryKey === key ? 'border border-[#9E8C70] shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080]' : '' }`} style={{backgroundImage: `url(${property_category.property_category_thumbnail})`}} onClick={() => (handleCategorySelect(key))}>
+                    <div key={key} className={`bg-no-repeat bg-cover w-xs px-7 py-10 h-100 relative cursor-pointer transition-all duration-300 motion-preset-slide-up motion-opacity-in-0 motion-blur-in-sm motion-duration-800 ease-(--ease-cinematic) hover:border border-[#9E8C70] hover:shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080] ${propertyCategoryKey === key ? 'border border-[#9E8C70] shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080]' : '' }`} style={{backgroundImage: `url(${property_category.property_category_thumbnail})`}} onClick={() => (handleCategorySelect(key))}>
                       <div className="absolute inset-0 bg-black/70"></div>
                       <div className={`w-7 h-7 rounded-full border border-[#7B7B7B] border-[1px] absolute right-5 top-5 ${propertyCategoryKey === key ? 'bg-[#9E8C70]' : '' } flex justify-center items-center`}>
                         <Image src={`${basePath}/images/icons/tick.png`} width={12} height={10} alt="Tick" className={`w-[10px] h-[7.55px] ${propertyCategoryKey !== key ? 'hidden' : ''}`} />
@@ -629,7 +632,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
         }
         {
           displayStep === 3 && propertyCategory && (
-          <section className={`flex flex-col pt-10 gap-10 transition-all duration-300 ease-in-out ${fading ? "opacity-0" : "opacity-100"}`}>
+          <section className={`flex flex-col pt-10 gap-10 transition-all duration-300 ease-in-out motion-preset-slide-up motion-opacity-in-0 motion-blur-in-sm motion-duration-800 ease-(--ease-cinematic) ${fading ? "opacity-0" : "opacity-100"}`}>
             <div className="flex flex-col gap-5 max-w-[650px]">
               <p className="uppercase text-[#b29a75] tracking-[0.2em]">Step 03 / Curated Selection</p>
               <h3 className={`font-zapf-regular text-[30px]`}>Choose the developments that interest you.</h3>
@@ -645,7 +648,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-10">
                 {
                   propertyCategory.properties && propertyCategory.properties.length > 0 && propertyCategory.properties.map((property, key) => (
-                    <div key={key} className={`bg-no-repeat bg-cover w-full px-7 py-7 h-100 relative flex items-end cursor-pointer transition-all duration-300 hover:border border-[#9E8C70] hover:shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080] ${propertyKey === key ? 'border border-[#9E8C70] shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080]' : '' }`} style={{backgroundImage: `url(${property.property_thumbnail})`}} onClick={() => (handlePropertySelect(key))}>
+                    <div key={key} className={`bg-no-repeat bg-cover w-full px-7 py-7 h-100 relative flex items-end cursor-pointer transition-all duration-300 motion-preset-slide-up motion-opacity-in-0 motion-blur-in-sm motion-duration-800 ease-(--ease-cinematic) hover:border border-[#9E8C70] hover:shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080] ${propertyKey === key ? 'border border-[#9E8C70] shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080]' : '' }`} style={{backgroundImage: `url(${property.property_thumbnail})`}} onClick={() => (handlePropertySelect(key))}>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                       <div className={`w-7 h-7 rounded-full border border-[#7B7B7B] border-[1px] absolute right-5 top-5 ${propertyKey === key ? 'bg-[#9E8C70]' : '' } flex justify-center items-center`}>
                         <Image src={`${basePath}/images/icons/tick.png`} width={12} height={10} alt="Tick" className={`w-[10px] h-[7.55px] ${propertyKey !== key ? 'hidden' : ''}`} />
@@ -666,7 +669,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
         }
         {
           displayStep === 4 && propertyCategory && property && (
-          <section className={`flex flex-col pt-10 gap-10 transition-all duration-300 ease-in-out ${fading ? "opacity-0" : "opacity-100"}`}>
+          <section className={`flex flex-col pt-10 gap-10 transition-all duration-300 ease-in-out motion-preset-slide-up motion-opacity-in-0 motion-blur-in-sm motion-duration-800 ease-(--ease-cinematic) ${fading ? "opacity-0" : "opacity-100"}`}>
             <div className="flex flex-col gap-5 max-w-[650px]">
               <p className="uppercase text-[#b29a75] tracking-[0.2em]">Step 04 / Configuration</p>
               <h3 className={`font-zapf-regular text-[30px]`}>Tailor each address individually.</h3>
@@ -681,7 +684,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 text-white relative">
                 {
                   property.property_configurations && property.property_configurations.length > 0 && property.property_configurations.map((configuration, key) => (
-                    <div className={`w-full border px-6 py-10 cursor-pointer transition-all duration-300 hover:border-[#ACAAA3] hover:border-[2px] hover:bg-[#20202066] ${configuration === configurationForm.configurationName ? 'border-[#ACAAA3] border-[2px] bg-[#20202066]' : 'border-[#4A4D49]' }`} key={key} onClick={() => handleConfigurationChange(configuration)}>{configuration}</div>
+                    <div className={`w-full border px-6 py-10 cursor-pointer transition-all duration-300 motion-preset-slide-up motion-opacity-in-0 motion-blur-in-sm motion-duration-500 ease-(--ease-cinematic) hover:border-[#ACAAA3] hover:border-[2px] hover:bg-[#20202066] ${configuration === configurationForm.configurationName ? 'border-[#ACAAA3] border-[2px] bg-[#20202066]' : 'border-[#4A4D49]' }`} key={key} onClick={() => handleConfigurationChange(configuration)}>{configuration}</div>
                   ))
                 }
                 <ErrorSpan error_message={errors.configurationName} />
@@ -690,7 +693,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 text-white relative">
                 {
                   propertyCategory.property_category_intended_uses && propertyCategory.property_category_intended_uses.length > 0 && propertyCategory.property_category_intended_uses.map((intent_use, key) => (
-                    <div className={`w-full border px-6 py-10 cursor-pointer transition-all duration-300 hover:border-[#ACAAA3] hover:border-[2px] hover:bg-[#20202066] ${intent_use === configurationForm.intentedUse ? 'border-[#ACAAA3] border-[2px] bg-[#20202066]' : 'border-[#4A4D49]' }`} key={key} onClick={() => handleIntendedUseChange(intent_use)}>{intent_use}</div>
+                    <div className={`w-full border px-6 py-10 cursor-pointer transition-all duration-300 motion-preset-slide-up motion-opacity-in-0 motion-blur-in-sm motion-duration-500 ease-(--ease-cinematic) hover:border-[#ACAAA3] hover:border-[2px] hover:bg-[#20202066] ${intent_use === configurationForm.intentedUse ? 'border-[#ACAAA3] border-[2px] bg-[#20202066]' : 'border-[#4A4D49]' }`} key={key} onClick={() => handleIntendedUseChange(intent_use)}>{intent_use}</div>
                   ))
                 }
                 <ErrorSpan error_message={errors.intentedUse} />
@@ -717,14 +720,14 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
         }
         {
           displayStep === 5 && (
-          <form ref={previewFormRef} className={`flex flex-col pt-10 gap-10 transition-all duration-300 ease-in-out ${fading ? "opacity-0" : "opacity-100"}`} onSubmit={previewFormHandleSubmit} autoComplete="off">
+          <form ref={previewFormRef} className={`flex flex-col pt-10 gap-10 transition-all duration-300 ease-in-out motion-preset-slide-up motion-opacity-in-0 motion-blur-in-sm motion-duration-700 ease-(--ease-cinematic) ${fading ? "opacity-0" : "opacity-100"}`} onSubmit={previewFormHandleSubmit} autoComplete="off">
             <div className="flex flex-col gap-5 max-w-[650px]">
               <p className="uppercase text-[#b29a75] tracking-[0.2em]">Step 05 / Review</p>
               <h3 className={`font-zapf-regular text-[30px]`}>A quiet review before we begin.</h3>
               <p className={` text-base leading-[1.5] text-white/65`}>Edit any section. Submit when ready — a Panchshil representative will reach out personally.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 text-sm lg:text-base">
-              <div className="border border-[#232323] p-5 lg:p-10 flex flex-col gap-5">
+              <div className="border border-[#232323] p-5 lg:p-10 flex flex-col gap-5 motion-preset-slide-up motion-opacity-in-0 motion-blur-in-sm motion-duration-800 ease-(--ease-cinematic)">
                 <div className="flex justify-between">
                   <h2 className={`font-zapf-regular text-[25px] lg:text-[32px]`}>Personal</h2>
                   <button className="cursor-pointer uppercase text-[#b29a75] tracking-[0.2em]" onClick={() => updateCurrentStep(1)}>Edit</button>
@@ -741,7 +744,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
                 <PreviewBlock section_heading="City" section_value={`${personalForm.city}`} />
                 <PreviewBlock section_heading="Address" section_value={`${personalForm.address}`} />
               </div>
-              <div className="border border-[#232323] p-5 lg:p-10 flex flex-col gap-5">
+              <div className="border border-[#232323] p-5 lg:p-10 flex flex-col gap-5 motion-preset-slide-up motion-opacity-in-0 motion-blur-in-sm motion-duration-800 ease-(--ease-cinematic)">
                 <div className="flex justify-between">
                   <h2 className={`font-zapf-regular text-[25px] lg:text-[32px]`}>Direction</h2>
                   <button className="cursor-pointer uppercase text-[#b29a75] tracking-[0.2em]" onClick={() => updateCurrentStep(2)}>Edit</button>
@@ -749,7 +752,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
                 <PreviewBlock section_heading="Category" section_value={`${categoryForm.categoryName}`} />
                 <PreviewBlock section_heading="Property" section_value={`${propertyForm.propertyName}`} />
               </div>
-              <div className="border border-[#232323] p-5 lg:p-10 flex flex-col gap-5">
+              <div className="border border-[#232323] p-5 lg:p-10 flex flex-col gap-5 motion-preset-slide-up motion-opacity-in-0 motion-blur-in-sm motion-duration-800 ease-(--ease-cinematic)">
                 <div className="flex justify-between">
                   <h2 className={`font-zapf-regular text-[25px] lg:text-[32px]`}>{propertyForm.propertyName}</h2>
                   <button className="cursor-pointer uppercase text-[#b29a75] tracking-[0.2em]" onClick={() => updateCurrentStep(3)}>Edit</button>
@@ -762,7 +765,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
                 <PreviewBlock section_heading="Timeline" section_value={`${configurationForm.investmentTimeline}`} />
               </div>
             </div>
-            <div className="border border-[#232323] p-5 lg:p-10 flex flex-col gap-5 w-full">
+            <div className="border border-[#232323] p-5 lg:p-10 flex flex-col gap-5 w-full motion-preset-slide-up motion-opacity-in-0 motion-blur-in-sm motion-duration-800 ease-(--ease-cinematic)">
               <h2 className={`font-zapf-regular text-[25px] lg:text-[32px]`}>Consent</h2>
               <p className=" text-white text-[16px]">By confirming, you agree to be contacted by a Panchshil representative regarding your enquiry. Your details remain confidential.</p>
             </div>

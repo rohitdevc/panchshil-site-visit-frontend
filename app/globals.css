@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "tailwindcss-motion";
 
 :root {
   --panchshil-ink: #071112;
@@ -6,6 +7,62 @@
 
 * {
   box-sizing: border-box;
+}
+
+@theme inline {
+  --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-drift-up: drift-up 0.9s var(--ease-cinematic, ease-out) both;
+  --animate-fade-soft: fade-soft 0.8s var(--ease-cinematic, ease-out) both;
+  --animate-shimmer: shimmer 8s linear infinite;
+  --animate-slow-zoom: slow-zoom 18s ease-in-out infinite alternate;
+  --animate-shake-soft: shake-soft 0.32s ease-in-out;
+}
+
+@keyframes drift-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes fade-soft {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes slow-zoom {
+  from {
+    transform: scale(1.04);
+  }
+  to {
+    transform: scale(1.14);
+  }
+}
+
+@keyframes shake-soft {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
 }
 
 html,
