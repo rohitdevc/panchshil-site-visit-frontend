@@ -1,0 +1,28 @@
+services:
+  panchshil:
+    container_name: panchshil-site-visit
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_PATH: ${NEXT_PUBLIC_PATH}
+        BASEPATH_PREFIX: ${BASEPATH_PREFIX}
+        ASSET_PREFIX: ${ASSET_PREFIX}
+        API_DOMAIN_NAME: ${API_DOMAIN_NAME}
+        FRONTEND_TOKEN_KEY: ${FRONTEND_TOKEN_KEY}
+        NEXT_PUBLIC_DOMAIN_NAME: ${NEXT_PUBLIC_DOMAIN_NAME}
+
+    env_file:
+      - .env
+
+    environment:
+      NODE_ENV: production
+      PORT: 2964
+      HOSTNAME: 0.0.0.0
+
+    ports:
+      - "2964:2964"
+
+    command: node server.js
+
+    restart: unless-stopped
