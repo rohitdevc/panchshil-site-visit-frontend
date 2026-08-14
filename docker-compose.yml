@@ -1,11 +1,9 @@
 services:
   panchshil:
     container_name: panchshil-site-visit
-
     build:
       context: .
       dockerfile: Dockerfile
-
       args:
         NEXT_PUBLIC_PATH: ${NEXT_PUBLIC_PATH}
         BASEPATH_PREFIX: ${BASEPATH_PREFIX}
