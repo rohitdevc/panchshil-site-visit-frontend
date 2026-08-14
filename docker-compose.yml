@@ -1,6 +1,7 @@
 services:
   panchshil:
     container_name: panchshil-site-visit
+
     build:
       context: .
       dockerfile: Dockerfile
@@ -18,11 +19,10 @@ services:
     environment:
       NODE_ENV: production
       PORT: 2964
-      HOSTNAME: 0.0.0.0
+      HOSTNAME: "0.0.0.0"
 
     ports:
       - "2964:2964"
 
     command: node server.js
-
     restart: unless-stopped
