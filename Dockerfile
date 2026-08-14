@@ -7,8 +7,6 @@ FROM base AS deps
 
 WORKDIR /app
 
-RUN npm update -g npm
-
 COPY package.json package-lock.json ./
 
 RUN npm ci --verbose || { cat /root/.npm/_logs/*-debug-0.log; exit 1; }
