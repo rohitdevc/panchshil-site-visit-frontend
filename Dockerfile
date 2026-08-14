@@ -11,7 +11,7 @@ RUN npm update -g npm
 
 COPY package.json package-lock.json ./
 
-RUN npm ci --verbose
+RUN npm ci --verbose || { cat /root/.npm/_logs/*-debug-0.log; exit 1; }
 
 
 # =========================
