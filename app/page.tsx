@@ -13,7 +13,7 @@ const [
   getIntroduction()
 ]);
 
-export const revalidate = 0;
+export const dynamic = 'force-dynamic';
 
 const basePath = process.env.NEXT_PUBLIC_DOMAIN_NAME;
 
