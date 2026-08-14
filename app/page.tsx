@@ -3,51 +3,48 @@ import { getMetaData, getBanner } from "@/lib/common";
 import { getIntroduction } from "@/lib/home";
 import { HomePage } from "@/components/pages/home";
 
-const [
-  meta,
-  banner,
-  introduction
-] = await Promise.all([
-  getMetaData("Home"),
-  getBanner("Home"),
-  getIntroduction()
-]);
-
 export const dynamic = 'force-dynamic';
 
-const basePath = process.env.NEXT_PUBLIC_DOMAIN_NAME;
+export async function generateMetadata(): Promise<Metadata> {
+  const [meta, banner] = await Promise.all([
+    getMetaData("Home"),
+    getBanner("Home")
+  ]);
 
-const canonical_tag = basePath;
+  const basePath = process.env.NEXT_PUBLIC_DOMAIN_NAME || "";
 
-export const metadata: Metadata = {
-  title: meta.meta_title,
-  description: meta.meta_description,
-  alternates: {
-    canonical: canonical_tag
-  },
-  openGraph: {
-      title: meta.meta_title,
-      description: meta.meta_description,
+  return {
+    title: meta?.meta_title,
+    description: meta?.meta_description,
+    alternates: {
+      canonical: basePath
+    },
+    openGraph: {
+      title: meta?.meta_title,
+      description: meta?.meta_description,
       type: "website",
-      url: canonical_tag,
+      url: basePath,
       siteName: "Panchshil Realty",
       images: [
         {
-          url: banner.banner_image,
+          url: banner?.banner_image,
           width: 1200,
           height: 630,
-          alt: meta.meta_title,
+          alt: meta?.meta_title,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: meta.meta_title,
-      description: meta.meta_description,
-      images: [banner.banner_image],
+      title: meta?.meta_title,
+      description: meta?.meta_description,
+      images: [banner?.banner_image],
     },
+  };
 }
 
-export default function Home() {
+export default async function Home() {
+  const introduction = await getIntroduction();
+
   return <HomePage introduction={introduction} />;
 }
