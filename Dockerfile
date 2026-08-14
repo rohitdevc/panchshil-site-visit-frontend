@@ -11,7 +11,7 @@ RUN npm update -g npm
 
 COPY package.json package-lock.json ./
 
-RUN npm ci
+RUN npm ci --verbose
 
 
 # =========================
@@ -39,7 +39,7 @@ ENV API_DOMAIN_NAME=$API_DOMAIN_NAME
 ENV FRONTEND_TOKEN_KEY=$FRONTEND_TOKEN_KEY
 ENV NEXT_PUBLIC_DOMAIN_NAME=$NEXT_PUBLIC_DOMAIN_NAME
 
-RUN npm run build
+RUN npm run build --verbose
 
 
 # =========================
