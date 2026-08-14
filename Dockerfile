@@ -9,7 +9,7 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 
-RUN npm ci --verbose || { cat /root/.npm/_logs/*-debug-0.log; exit 1; }
+RUN npm ci
 
 
 # =========================
@@ -37,7 +37,7 @@ ENV API_DOMAIN_NAME=$API_DOMAIN_NAME
 ENV FRONTEND_TOKEN_KEY=$FRONTEND_TOKEN_KEY
 ENV NEXT_PUBLIC_DOMAIN_NAME=$NEXT_PUBLIC_DOMAIN_NAME
 
-RUN npm ci --verbose || { cat /root/.npm/_logs/*-debug-0.log; exit 1; }
+RUN npm run build
 
 
 # =========================
