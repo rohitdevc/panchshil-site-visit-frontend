@@ -464,7 +464,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
         </header>
         {
           displayStep === 1 && (
-          <section className={`flex flex-col lg:flex-row lg:items-stretch pt-10 gap-10 xl:gap-20 transition-all duration-300 ease-in-out overflow-hidden motion-opacity-in-0 motion-duration-1200 motion-ease-out ${fading ? "opacity-0" : "opacity-100"}`}>
+          <section className={`flex flex-col lg:flex-row lg:items-stretch pt-10 gap-10 transition-all duration-300 ease-in-out overflow-hidden motion-opacity-in-0 motion-duration-1200 motion-ease-out ${fading ? "opacity-0" : "opacity-100"}`}>
             <div style={{backgroundImage: `url(${basePath}/images/form/step-01.png)`}} className="bg-no-repeat bg-cover bg-center w-full lg:w-2xl relative p-5 lg:p-10">
               <div className="absolute inset-0 bg-black/40"></div>
               <div className="flex flex-col relative h-full min-h-60">
@@ -476,11 +476,11 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
               </div>
             </div>
             <form ref={personalFormRef} onSubmit={personalFormHandleSubmit} className="flex flex-col gap-5 w-full tracking-wider text-[#ACAAA3] motion-preset-slide-up motion-opacity-in-0 motion-blur-in-sm motion-duration-800 ease-(--ease-cinematic)" autoComplete="off">
-              <div className="flex flex-col lg:flex-row gap-5 lg:justify-between">
+              <div className="flex flex-col xl:flex-row gap-5 xl:justify-between">
                 <div className="flex flex-col gap-3 relative">
                   <label>Title</label>
                   <div className="relative">
-                    <select name="title" value={personalForm.title} onChange={handleChange} className="appearance-none w-full lg:!w-35" ref={titleRef}>
+                    <select name="title" value={personalForm.title} onChange={handleChange} className="appearance-none w-full xl:!w-35" ref={titleRef}>
                       <option value="">Select Title</option>
                       <option>Mr.</option>
                       <option>Mrs.</option>
@@ -504,11 +504,11 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
                   <ErrorSpan error_message={errors.lastName} />
                 </div>
               </div>
-              <div className="flex flex-col lg:flex-row gap-5 lg:justify-between">
-                <div className="flex flex-col gap-3 w-full lg:w-30 relative">
+              <div className="flex lg:grid lg:grid-cols-2 xl:flex flex-col lg:flex-row gap-5 lg:justify-between">
+                <div className="flex flex-col gap-3 w-full xl:w-30 relative">
                   <label>Code</label>
                   <div className="relative">
-                    <select name="countryCode" value={personalForm.countryCode} onChange={handleChange} className="appearance-none w-full lg:!w-35" ref={countryCodeRef}>
+                    <select name="countryCode" value={personalForm.countryCode} onChange={handleChange} className="appearance-none w-full xl:!w-35" ref={countryCodeRef}>
                       {
                         countryArray && countryArray.length > 0 && countryArray.map((country, key) => (
                           <option key={key} value={country.phone}>+{country.phone} {country.name}</option>
@@ -524,10 +524,10 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
                   <input type="tel" name="mobileNumber" value={personalForm.mobileNumber} onChange={handleChange} inputMode="numeric" ref={mobileNumberRef} />
                   <ErrorSpan error_message={errors.mobileNumber} />
                 </div>
-                <div className="flex flex-col gap-3 w-full lg:w-30 relative">
+                <div className="flex flex-col gap-3 w-full xl:w-30 relative">
                   <label>Code</label>
                   <div className="relative">
-                    <select name="alternateCountryCode" value={personalForm.alternateCountryCode} onChange={handleChange} className="appearance-none w-full lg:!w-35" ref={alternateCountryCodeRef}>
+                    <select name="alternateCountryCode" value={personalForm.alternateCountryCode} onChange={handleChange} className="appearance-none w-full xl:!w-35" ref={alternateCountryCodeRef}>
                       {
                         countryArray && countryArray.length > 0 && countryArray.map((country, key) => (
                           <option key={key} value={country.phone}>+{country.phone} {country.name}</option>
@@ -539,7 +539,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
                   <ErrorSpan error_message={errors.alternateCountryCode} />
                 </div>
                 <div className="flex flex-col gap-3 w-full relative">
-                  <label>Alternate Number <span className="text-gray-500 text-[10px]">(Optional)</span></label>
+                  <label>Alternate Number <span className="text-gray-500 text-[10px] lg:text-[8px]">(Optional)</span></label>
                   <input type="tel" name="alternateNumber" value={personalForm.alternateNumber} onChange={handleChange} inputMode="numeric" ref={alternateNumberRef} />
                   <ErrorSpan error_message={errors.alternateNumber} />
                 </div>
@@ -551,12 +551,12 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
               </div>
               <div className="flex flex-col lg:flex-row gap-5 lg:justify-between">
                 <div className="flex flex-col gap-3 w-full relative">
-                  <label>Organization <span className="text-gray-500 text-[10px]">(Optional)</span></label>
+                  <label>Organization <span className="text-gray-500 text-[10px] lg:text-[8px]">(Optional)</span></label>
                   <input type="text" name="organization" value={personalForm.organization} onChange={handleChange} ref={organizationRef} />
                   <ErrorSpan error_message={errors.organization} />
                 </div>
                 <div className="flex flex-col gap-3 w-full relative">
-                  <label>Designation <span className="text-gray-500 text-[10px]">(Optional)</span></label>
+                  <label>Designation <span className="text-gray-500 text-[10px] lg:text-[8px]">(Optional)</span></label>
                   <input type="text" name="designation" value={personalForm.designation} onChange={handleChange} ref={designationRef} />
                   <ErrorSpan error_message={errors.designation} />
                 </div>
@@ -582,13 +582,13 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
                   <ErrorSpan error_message={errors.pincode} />
                 </div>
                 <div className="flex flex-col gap-3 w-full relative">
-                  <label>City <span className="text-gray-500 text-[10px]">(Optional)</span></label>
+                  <label>City <span className="text-gray-500 text-[10px] lg:text-[8px]">(Optional)</span></label>
                   <input type="text" name="city" value={personalForm.city} onChange={handleChange} ref={cityRef} />
                   <ErrorSpan error_message={errors.city} />
                 </div>
               </div>
               <div className="flex flex-col gap-3 w-full relative">
-                <label>Address <span className="text-gray-500 text-[10px]">(Optional)</span></label>
+                <label>Address <span className="text-gray-500 text-[10px] lg:text-[8px]">(Optional)</span></label>
                 <input type="text" name="address" value={personalForm.address} onChange={handleChange} ref={addressRef} />
                 <ErrorSpan error_message={errors.address} />
               </div>
@@ -609,7 +609,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {
                   property_categories && property_categories.length > 0 && property_categories.map((property_category, key) => (
-                    <div key={key} className={`bg-no-repeat bg-cover w-xs px-7 py-10 h-100 relative cursor-pointer transition-all duration-300 motion-preset-slide-up motion-opacity-in-0 motion-blur-in-sm motion-duration-800 ease-(--ease-cinematic) hover:border border-[#9E8C70] hover:shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080] ${propertyCategoryKey === key ? 'border border-[#9E8C70] shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080]' : '' }`} style={{backgroundImage: `url(${property_category.property_category_thumbnail})`}} onClick={() => (handleCategorySelect(key))}>
+                    <div key={key} className={`bg-no-repeat bg-cover bg-center px-7 py-10 h-100 relative cursor-pointer transition-all duration-300 motion-preset-slide-up motion-opacity-in-0 motion-blur-in-sm motion-duration-800 ease-(--ease-cinematic) hover:border border-[#9E8C70] hover:shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080] ${propertyCategoryKey === key ? 'border border-[#9E8C70] shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080]' : '' }`} style={{backgroundImage: `url(${property_category.property_category_thumbnail})`}} onClick={() => (handleCategorySelect(key))}>
                       <div className="absolute inset-0 bg-black/70"></div>
                       <div className={`w-7 h-7 rounded-full border border-[#7B7B7B] border-[1px] absolute right-5 top-5 ${propertyCategoryKey === key ? 'bg-[#9E8C70]' : '' } flex justify-center items-center`}>
                         <Image src={`${basePath}/images/icons/tick.png`} width={12} height={10} alt="Tick" className={`w-[10px] h-[7.55px] ${propertyCategoryKey !== key ? 'hidden' : ''}`} />
@@ -648,7 +648,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-10">
                 {
                   propertyCategory.properties && propertyCategory.properties.length > 0 && propertyCategory.properties.map((property, key) => (
-                    <div key={key} className={`bg-no-repeat bg-cover w-full px-7 py-7 h-100 relative flex items-end cursor-pointer transition-all duration-300 motion-preset-slide-up motion-opacity-in-0 motion-blur-in-sm motion-duration-800 ease-(--ease-cinematic) hover:border border-[#9E8C70] hover:shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080] ${propertyKey === key ? 'border border-[#9E8C70] shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080]' : '' }`} style={{backgroundImage: `url(${property.property_thumbnail})`}} onClick={() => (handlePropertySelect(key))}>
+                    <div key={key} className={`bg-no-repeat bg-cover bg-center w-full px-7 py-7 h-100 relative flex items-end cursor-pointer transition-all duration-300 motion-preset-slide-up motion-opacity-in-0 motion-blur-in-sm motion-duration-800 ease-(--ease-cinematic) hover:border border-[#9E8C70] hover:shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080] ${propertyKey === key ? 'border border-[#9E8C70] shadow-[inset_0px_0px_0px_0px_#9E8C7080,_0px_20px_32px_0px_#9E8C7080,_0px_10px_108.5px_0px_#9E8C7080]' : '' }`} style={{backgroundImage: `url(${property.property_thumbnail})`}} onClick={() => (handlePropertySelect(key))}>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                       <div className={`w-7 h-7 rounded-full border border-[#7B7B7B] border-[1px] absolute right-5 top-5 ${propertyKey === key ? 'bg-[#9E8C70]' : '' } flex justify-center items-center`}>
                         <Image src={`${basePath}/images/icons/tick.png`} width={12} height={10} alt="Tick" className={`w-[10px] h-[7.55px] ${propertyKey !== key ? 'hidden' : ''}`} />
@@ -699,7 +699,7 @@ export function CustomerFormPage({property_categories, investment_timelines}: Pa
                 <ErrorSpan error_message={errors.intentedUse} />
               </div>
               <div className="flex flex-col gap-3 w-full lg:w-1/2 mt-10">
-                <label>Investment Timeline <span className="text-gray-500 text-[10px]">Optional</span></label>
+                <label>Investment Timeline <span className="text-gray-500 text-[10px] lg:text-[8px]">Optional</span></label>
                 <div className="relative">
                   <select name="investmentTimeline" value={configurationForm.investmentTimeline} onChange={handleChange} className="appearance-none" ref={timelineRef}>
                     <option value="">-</option>
