@@ -1,5 +1,5 @@
 services:
-  panchshil:
+  site-visit-web:
     container_name: panchshil-site-visit
 
     build:
@@ -10,7 +10,6 @@ services:
         BASEPATH_PREFIX: ${BASEPATH_PREFIX}
         ASSET_PREFIX: ${ASSET_PREFIX}
         API_DOMAIN_NAME: ${API_DOMAIN_NAME}
-        FRONTEND_TOKEN_KEY: ${FRONTEND_TOKEN_KEY}
         NEXT_PUBLIC_DOMAIN_NAME: ${NEXT_PUBLIC_DOMAIN_NAME}
 
     env_file:

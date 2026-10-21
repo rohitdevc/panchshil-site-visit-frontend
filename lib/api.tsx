@@ -23,7 +23,7 @@ export async function apiGETFetch<T>(endpoint: string, options: RequestInit = {}
         method: 'get',
         ...options,
         headers,
-        cache: "no-store",
+        cache: "force-cache",
     });
     
     if (!res.ok) {

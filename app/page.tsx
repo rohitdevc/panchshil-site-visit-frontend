@@ -3,8 +3,6 @@ import { getMetaData, getBanner } from "@/lib/common";
 import { getIntroduction } from "@/lib/home";
 import { HomePage } from "@/components/pages/home";
 
-export const dynamic = 'force-dynamic';
-
 export async function generateMetadata(): Promise<Metadata> {
   const [meta, banner] = await Promise.all([
     getMetaData("Home"),

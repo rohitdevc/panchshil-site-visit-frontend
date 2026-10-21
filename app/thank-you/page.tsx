@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { getMetaData, getBanner } from "@/lib/common";
 import { ThankYouPage } from "@/components/pages/thank-you";
 
-export const dynamic = 'force-dynamic';
-
 export async function generateMetadata(): Promise<Metadata> {
   const [meta, banner] = await Promise.all([
     getMetaData("Thank You"),
