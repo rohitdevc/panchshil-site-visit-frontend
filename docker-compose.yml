@@ -11,6 +11,7 @@ services:
         ASSET_PREFIX: ${ASSET_PREFIX}
         API_DOMAIN_NAME: ${API_DOMAIN_NAME}
         NEXT_PUBLIC_DOMAIN_NAME: ${NEXT_PUBLIC_DOMAIN_NAME}
+        REDIS_URL: ${REDIS_URL}
 
     env_file:
       - .env
