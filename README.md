@@ -74,6 +74,7 @@ BASEPATH_PREFIX=
 ASSET_PREFIX=
 API_DOMAIN_NAME=
 NEXT_PUBLIC_DOMAIN_NAME=
+REDIS_URL=
 ```
 
 | Variable | Purpose |
@@ -83,6 +84,7 @@ NEXT_PUBLIC_DOMAIN_NAME=
 | `ASSET_PREFIX` | Optional static asset prefix |
 | `API_DOMAIN_NAME` | API domain configuration |
 | `NEXT_PUBLIC_DOMAIN_NAME` | Public website domain used for canonical and social metadata |
+| `REDIS_URL` | Redis URL used by the application. |
 
 Use the values appropriate to your environment. Verify the API service modules for any additional requirements before starting the application.
 

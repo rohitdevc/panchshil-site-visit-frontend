@@ -1,55 +1,41 @@
-import { createHash, randomUUID } from "node:crypto";
-import { redis } from "@/lib/redis";
+import Redis from "ioredis";
+import { RateLimiterRedis } from "rate-limiter-flexible";
+import { NextRequest, NextResponse } from "next/server";
 
-const LIMIT = 5;
-const WINDOW_MS = 10 * 60 * 1000;
+const redis = new Redis(process.env.REDIS_URL!);
 
-type RateLimitResult = {
-    allowed: boolean;
-    remaining: number;
-    retryAfter: number;
-}
+const limiters = {
+    contact: new RateLimiterRedis({
+        storeClient: redis,
+        keyPrefix: "rate_limit:contact",
+        points: 5,
+        duration: 30,
+    })
+};
 
-export async function checkEnquiryRateLimit(ip: string): Promise<RateLimitResult> {
-    const ipHash = createHash("sha256").update(ip).digest("hex");
-    const key = `rate-limit:enquiry-form:${ip}`;
+type LimitType = keyof typeof limiters;
+
+export async function checkRateLimit(request: NextRequest, type: LimitType) {
+    const ip = request.headers.get("x-real-ip") || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
     
-    const now = Date.now();
-    const member = `${now}:${randomUUID()}`;
-    
-    const result = await redis
-    .multi()
-    .zremrangebyscore(key, "-inf", now - WINDOW_MS)
-    .zadd(key, now, member)
-    .zcard(key)
-    .pexpire(key, WINDOW_MS)
-    .exec();
-    
-    if (!result) {
-        throw new Error("Redis rate-limit transaction failed");
-    }
-    
-    const count = Number(result[2][1]);
-    
-    if (count > LIMIT) {
-        await redis.zrem(key, member);
+    try {
+        await limiters[type].consume(ip);
+        return null;
+    } catch (error: any) {
+        const rateLimitError = error as {msBeforeNext?: number};
         
-        const oldest = (await redis.call("ZRANGE", key, "0", "0", "WITHSCORES")) as string[];
-        
-        const oldestTimestamp = oldest.length >= 2 ? Number(oldest[1]) : now;
-        
-        const retryAfter = Math.max(1, Math.ceil((oldestTimestamp + WINDOW_MS - now) / 1000));
-        
-        return {
-            allowed: false,
-            remaining: 0,
-            retryAfter,
+        if (typeof rateLimitError?.msBeforeNext === "number") {
+            return NextResponse.json({
+                error: JSON.stringify([{
+                    msg: "Too many requests. Please try again later.",
+                }]),
+            },
+            { status: 429 });
         }
-    }
-    
-    return {
-        allowed: true,
-        remaining: LIMIT - count,
-        retryAfter: 0,
+        
+        return NextResponse.json(
+            { success: false, msg: "Service temporarily unavailable." },
+            { status: 503 }
+        )
     }
 }
